@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apuestas — Marcador</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-row">
+    <div class="brand">
+      <span class="brand-mark">M</span>
+      <div class="brand-text">
+        <div class="brand-name">Marcador</div>
+        <div class="brand-sub">motor de análisis estadístico</div>
+      </div>
+    </div>
+    <nav class="site-nav">
+      <a href="/">Analizar</a>
+      <a href="/historial">Historial</a>
+      <a href="/calibracion">Calibración</a>
+      <a href="/apuestas" class="active">Apuestas</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <h1 class="hist-title">Tus apuestas</h1>
+  <p class="ayuda-jugadores">
+    Cuando veas un "VALUE" en el análisis de un partido puedes registrar aquí lo que
+    apostaste de verdad. Esto no apuesta dinero real por ti — solo lleva la cuenta
+    de tu ROI real a lo largo del tiempo, separado de lo que el modelo "cree".
+  </p>
+
+  <div class="resumen-calibracion">
+    <div class="resumen-item">
+      <div class="resumen-num">{{ total_apostado }}</div>
+      <div class="resumen-label">total apostado (resueltas)</div>
+    </div>
+    <div class="resumen-item">
+      <div class="resumen-num" style="color: {{ 'var(--verde)' if ganancia_neta >= 0 else 'var(--rojo)' }}">{{ ganancia_neta }}</div>
+      <div class="resumen-label">ganancia/pérdida neta</div>
+    </div>
+    <div class="resumen-item">
+      <div class="resumen-num">{{ roi if roi is not none else '—' }}{{ '%' if roi is not none else '' }}</div>
+      <div class="resumen-label">ROI</div>
+    </div>
+    <div class="resumen-item">
+      <div class="resumen-num">{{ pendientes }}</div>
+      <div class="resumen-label">pendientes por resolver</div>
+    </div>
+  </div>
+
+  <div class="tabla-scroll">
+  <table class="tabla-historial">
+    <thead>
+      <tr>
+        <th>Fecha</th><th>Partido</th><th>Selección</th><th>Cuota</th><th>Monto</th><th>Estado</th><th>Ganancia</th><th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for a in apuestas %}
+      <tr data-apuesta-id="{{ a.id }}">
+        <td>{{ a.fecha }}</td>
+        <td>{{ a.partido }}</td>
+        <td>{{ a.seleccion }} <span class="casa-cuota">({{ a.mercado }})</span></td>
+        <td>{{ a.cuota }}</td>
+        <td>{{ a.monto }}</td>
+        <td class="cap">{{ a.estado }}</td>
+        <td class="{{ 'edge-positivo' if a.ganancia and a.ganancia > 0 else 'edge-negativo' if a.ganancia else '' }}">
+          {{ a.ganancia if a.ganancia is not none else '—' }}
+        </td>
+        <td>
+          {% if a.estado == 'pendiente' %}
+          <div class="marcar-resultado">
+            <button type="button" class="btn-marcar acierto btn-resolver" data-id="{{ a.id }}" data-estado="ganada">Ganada</button>
+            <button type="button" class="btn-marcar fallo btn-resolver" data-id="{{ a.id }}" data-estado="perdida">Perdida</button>
+          </div>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% if apuestas|length == 0 %}
+  <div class="resultado-vacio"><p>Todavía no has registrado ninguna apuesta.</p></div>
+  {% endif %}
+</main>
+
+<script src="{{ url_for('static', filename='apuestas.js') }}"></script>
+</body>
+</html>

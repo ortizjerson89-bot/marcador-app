@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Historial — Marcador</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-row">
+    <div class="brand">
+      <span class="brand-mark">M</span>
+      <div class="brand-text">
+        <div class="brand-name">Marcador</div>
+        <div class="brand-sub">motor de análisis estadístico</div>
+      </div>
+    </div>
+    <nav class="site-nav">
+      <a href="/">Analizar</a>
+      <a href="/historial" class="active">Historial</a>
+      <a href="/apuestas">Apuestas</a>
+      <a href="/calibracion">Calibración</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="hist-header-row">
+    <h1 class="hist-title">Análisis guardados</h1>
+    <a href="/historial/exportar.csv" class="btn-secundario">Exportar CSV</a>
+  </div>
+
+  <p class="ayuda-jugadores">
+    Marca si el pronóstico acertó o falló cuando termine el partido — esos datos
+    alimentan la página de <a href="/calibracion">Calibración</a>, que te dice si el
+    % de confianza del modelo realmente corresponde con qué tan seguido acierta.
+  </p>
+
+  {% if items|length == 0 %}
+  <div class="resultado-vacio">
+    <p>Todavía no hay análisis guardados.</p>
+  </div>
+  {% else %}
+  <div class="tabla-scroll"><table class="tabla-historial">
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Deporte</th>
+        <th>Partido</th>
+        <th>Pronóstico</th>
+        <th>Confianza</th>
+        <th>¿Acertó?</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for it in items %}
+      <tr data-fila-id="{{ it.id }}">
+        <td>{{ it.fecha }}</td>
+        <td class="cap">{{ it.deporte }}</td>
+        <td>{{ it.equipo_local }} vs {{ it.equipo_visita }}</td>
+        <td>{{ it.pronostico }}</td>
+        <td><span class="chip-confianza">{{ it.confianza }}%</span></td>
+        <td>
+          <div class="marcar-resultado" data-marcar="{{ it.id }}">
+            <button type="button" class="btn-marcar acierto {{ 'activo' if it.resultado_real == 'acierto' else '' }}" data-valor="acierto">✓ Acertó</button>
+            <button type="button" class="btn-marcar fallo {{ 'activo' if it.resultado_real == 'fallo' else '' }}" data-valor="fallo">✗ Falló</button>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table></div>
+  {% endif %}
+</main>
+
+<script src="{{ url_for('static', filename='historial.js') }}"></script>
+</body>
+</html>

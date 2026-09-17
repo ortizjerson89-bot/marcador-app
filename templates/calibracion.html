@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calibración — Marcador</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-row">
+    <div class="brand">
+      <span class="brand-mark">M</span>
+      <div class="brand-text">
+        <div class="brand-name">Marcador</div>
+        <div class="brand-sub">motor de análisis estadístico</div>
+      </div>
+    </div>
+    <nav class="site-nav">
+      <a href="/">Analizar</a>
+      <a href="/historial">Historial</a>
+      <a href="/apuestas">Apuestas</a>
+      <a href="/calibracion" class="active">Calibración</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <h1 class="hist-title">¿Qué tan confiable es la confianza?</h1>
+
+  <p class="ayuda-jugadores">
+    Un modelo bien calibrado, cuando dice "70% de confianza", debería acertar
+    cerca del 70% de las veces — ni más, ni menos. Esta tabla compara ambas cosas
+    usando los análisis que marcaste como acierto/fallo en el
+    <a href="/historial">historial</a>.
+  </p>
+
+  <div class="resumen-calibracion">
+    <div class="resumen-item">
+      <div class="resumen-num">{{ total_analisis }}</div>
+      <div class="resumen-label">análisis guardados en total</div>
+    </div>
+    <div class="resumen-item">
+      <div class="resumen-num">{{ total_marcados }}</div>
+      <div class="resumen-label">marcados con resultado real</div>
+    </div>
+  </div>
+
+  {% if total_marcados == 0 %}
+  <div class="resultado-vacio">
+    <p>Todavía no hay análisis marcados como acierto/fallo. Ve al
+    <a href="/historial">historial</a> y marca algunos partidos ya jugados —
+    entre más marques, más confiable será esta tabla.</p>
+  </div>
+  {% else %}
+  <div class="tabla-scroll"><table class="tabla-historial tabla-calibracion">
+    <thead>
+      <tr>
+        <th>Rango de confianza del modelo</th>
+        <th>Partidos marcados</th>
+        <th>Aciertos</th>
+        <th>% de acierto real</th>
+        <th>Lectura</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for b in buckets %}
+      <tr>
+        <td>{{ b.rango }}</td>
+        <td>{{ b.total }}</td>
+        <td>{{ b.aciertos }}</td>
+        <td>
+          {% if b.pct_acierto is not none %}
+          <span class="chip-confianza">{{ b.pct_acierto }}%</span>
+          {% else %}
+          <span class="sin-datos">sin datos aún</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if b.pct_acierto is none %}
+          <span class="sin-datos">—</span>
+          {% elif b.total < 5 %}
+          <span class="sin-datos">necesita más partidos</span>
+          {% else %}
+          <span class="chip-confianza">comparar contra el rango de la izquierda</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table></div>
+  <p class="ayuda-jugadores">
+    Lee la tabla comparando la columna "% de acierto real" contra el rango de
+    confianza de esa misma fila: si el modelo dijo "80–90%" y el acierto real
+    también ronda ese rango, está bien calibrado ahí; si el acierto real es mucho
+    más bajo, el modelo está siendo demasiado optimista en ese rango de confianza.
+    "Necesita más partidos" aparece con menos de 5 marcados — con tan pocos datos
+    el % todavía puede moverse mucho con el próximo resultado.
+  </p>
+  {% endif %}
+</main>
+
+</body>
+</html>

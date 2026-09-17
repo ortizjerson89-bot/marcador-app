@@ -1,0 +1,666 @@
+:root {
+  --tinta: #10161d;
+  --tinta-panel: #161e27;
+  --tinta-linea: #263241;
+  --hueso: #ECE7DA;
+  --hueso-tenue: #A9B0B8;
+  --ambar: #D8A93E;
+  --ambar-tenue: #8a6f2e;
+  --verde: #4F9D75;
+  --rojo: #C0604B;
+  --radio: 3px;
+  font-size: 16px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--tinta);
+  color: var(--hueso);
+  font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+}
+
+.wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+/* -------------------- Header -------------------- */
+
+.site-header {
+  border-bottom: 1px solid var(--tinta-linea);
+}
+
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 28px;
+}
+
+.brand { display: flex; align-items: center; gap: 12px; }
+
+.brand-mark {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ambar);
+  color: var(--tinta);
+  font-family: "Iowan Old Style", "Georgia", serif;
+  font-weight: 700;
+  font-size: 18px;
+  border-radius: var(--radio);
+}
+
+.brand-name {
+  font-family: "Iowan Old Style", "Georgia", serif;
+  font-size: 19px;
+  letter-spacing: 0.2px;
+}
+
+.brand-sub {
+  font-size: 12.5px;
+  color: var(--hueso-tenue);
+}
+
+.site-nav a {
+  color: var(--hueso-tenue);
+  text-decoration: none;
+  margin-left: 26px;
+  font-size: 15px;
+  padding-bottom: 4px;
+  border-bottom: 2px solid transparent;
+}
+
+.site-nav a.active,
+.site-nav a:hover {
+  color: var(--hueso);
+  border-bottom-color: var(--ambar);
+}
+
+/* -------------------- Layout principal -------------------- */
+
+.main-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px;
+  padding-top: 32px;
+  padding-bottom: 60px;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .main-grid { grid-template-columns: 1fr; }
+}
+
+/* -------------------- Formulario -------------------- */
+
+.sport-tabs {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 22px;
+  border: 1px solid var(--tinta-linea);
+  border-radius: var(--radio);
+  overflow: hidden;
+  width: fit-content;
+}
+
+.sport-tab {
+  background: transparent;
+  border: none;
+  color: var(--hueso-tenue);
+  padding: 9px 18px;
+  font-size: 14.5px;
+  cursor: pointer;
+  border-right: 1px solid var(--tinta-linea);
+}
+.sport-tab:last-child { border-right: none; }
+
+.sport-tab.active {
+  background: var(--ambar);
+  color: var(--tinta);
+  font-weight: 600;
+}
+
+h3 {
+  font-size: 13.5px;
+  color: var(--ambar);
+  text-transform: none;
+  font-weight: 600;
+  margin: 26px 0 10px;
+  padding-top: 14px;
+  border-top: 1px solid var(--tinta-linea);
+}
+.sport-fields > h3:first-of-type { border-top: none; padding-top: 0; }
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+.field-row.three { grid-template-columns: 1fr 1fr 1fr; }
+.field-row.four { grid-template-columns: 1fr 1fr 1fr 1fr; }
+
+@media (max-width: 560px) {
+  .field-row, .field-row.three, .field-row.four { grid-template-columns: 1fr 1fr; }
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--hueso-tenue);
+}
+
+input[type="text"],
+input[type="number"] {
+  background: var(--tinta-panel);
+  border: 1px solid var(--tinta-linea);
+  color: var(--hueso);
+  padding: 9px 10px;
+  border-radius: var(--radio);
+  font-size: 14.5px;
+  font-variant-numeric: tabular-nums;
+}
+input:focus {
+  outline: none;
+  border-color: var(--ambar);
+}
+
+.jugador-block {
+  border-left: 2px solid var(--tinta-linea);
+  padding-left: 14px;
+  margin-bottom: 16px;
+}
+.jugador-nombre-row { grid-template-columns: 1fr; margin-bottom: 8px; }
+.opcional-tag { color: var(--hueso-tenue); font-weight: 400; }
+.ayuda-jugadores { font-size: 12.5px; color: var(--hueso-tenue); margin: -4px 0 14px; }
+
+.aviso-api {
+  border: 1px solid var(--tinta-linea);
+  background: var(--tinta-panel);
+  color: var(--hueso-tenue);
+  font-size: 12.5px;
+  padding: 10px 14px;
+  border-radius: var(--radio);
+  margin-bottom: 18px;
+}
+.aviso-api code {
+  background: var(--tinta);
+  padding: 1px 5px;
+  border-radius: 2px;
+  color: var(--ambar);
+}
+
+.input-buscable {
+  display: flex;
+  gap: 6px;
+}
+.input-buscable input { flex: 1; }
+
+.btn-buscar {
+  background: transparent;
+  border: 1px solid var(--tinta-linea);
+  color: var(--hueso-tenue);
+  padding: 0 12px;
+  border-radius: var(--radio);
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn-buscar:hover { border-color: var(--ambar); color: var(--ambar); }
+.btn-buscar:disabled { opacity: 0.5; cursor: wait; }
+
+.resultados-busqueda {
+  margin-top: 6px;
+}
+.resultados-busqueda:empty { display: none; }
+
+.resultado-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 10px;
+  border: 1px solid var(--tinta-linea);
+  border-top: none;
+  font-size: 13px;
+  cursor: pointer;
+  background: var(--tinta-panel);
+}
+.resultado-item:first-child { border-top: 1px solid var(--tinta-linea); border-radius: var(--radio) var(--radio) 0 0; }
+.resultado-item:last-child { border-radius: 0 0 var(--radio) var(--radio); }
+.resultado-item:hover { background: var(--tinta-linea); }
+.resultado-item .pais { color: var(--hueso-tenue); font-size: 12px; }
+
+.resultado-mensaje {
+  font-size: 12.5px;
+  color: var(--hueso-tenue);
+  padding: 6px 2px;
+}
+.resultado-mensaje.error { color: var(--rojo); }
+.resultado-mensaje.ok { color: var(--verde); }
+
+.btn-analizar {
+  margin-top: 22px;
+  width: 100%;
+  background: var(--ambar);
+  color: var(--tinta);
+  border: none;
+  padding: 13px;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: var(--radio);
+  cursor: pointer;
+}
+.btn-analizar:hover { background: #e5b954; }
+.btn-analizar:disabled { opacity: 0.55; cursor: wait; }
+
+/* -------------------- Panel de resultado -------------------- */
+
+.panel-resultado {
+  position: sticky;
+  top: 24px;
+}
+
+.resultado-vacio {
+  border: 1px dashed var(--tinta-linea);
+  border-radius: var(--radio);
+  padding: 32px 26px;
+  color: var(--hueso-tenue);
+}
+.nota-vacia { font-size: 13px; margin-top: 10px; }
+
+.res-header {
+  border: 1px solid var(--tinta-linea);
+  border-radius: var(--radio);
+  padding: 22px 24px;
+  margin-bottom: 18px;
+  background: var(--tinta-panel);
+}
+
+.res-pronostico-label {
+  font-size: 12.5px;
+  color: var(--hueso-tenue);
+}
+
+.res-pronostico {
+  font-family: "Iowan Old Style", "Georgia", serif;
+  font-size: 28px;
+  margin: 4px 0 14px;
+}
+
+.res-confianza-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.res-confianza-track {
+  flex: 1;
+  height: 6px;
+  background: var(--tinta-linea);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.res-confianza-fill {
+  height: 100%;
+  background: var(--ambar);
+}
+.res-confianza-num {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 15px;
+  min-width: 48px;
+  text-align: right;
+}
+
+.bloque-mercado {
+  border: 1px solid var(--tinta-linea);
+  border-radius: var(--radio);
+  padding: 18px 20px;
+  margin-bottom: 14px;
+}
+.bloque-mercado h4 {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: var(--hueso-tenue);
+  font-weight: 600;
+}
+
+.barra-item { margin-bottom: 10px; }
+.barra-item:last-child { margin-bottom: 0; }
+.barra-etiquetas {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+.barra-valor { font-variant-numeric: tabular-nums; color: var(--ambar); font-weight: 600; }
+.barra-track {
+  height: 8px;
+  background: var(--tinta-linea);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.barra-fill { height: 100%; background: var(--verde); }
+
+.datos-clave {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 18px;
+}
+.dato-clave { font-size: 13.5px; }
+.dato-clave b { color: var(--hueso); font-variant-numeric: tabular-nums; }
+
+.jugador-card {
+  border-top: 1px solid var(--tinta-linea);
+  padding-top: 12px;
+  margin-top: 12px;
+}
+.jugador-card:first-of-type { border-top: none; margin-top: 0; padding-top: 0; }
+.jugador-nombre { font-weight: 600; margin-bottom: 6px; }
+.jugador-stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  font-size: 13px;
+  color: var(--hueso-tenue);
+}
+.jugador-stats-row b { color: var(--hueso); font-variant-numeric: tabular-nums; }
+
+.factores-lista {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 13.5px;
+  color: var(--hueso-tenue);
+}
+.factores-lista li { margin-bottom: 6px; }
+
+/* -------------------- Historial -------------------- */
+
+.hist-title {
+  font-family: "Iowan Old Style", "Georgia", serif;
+  font-size: 26px;
+  margin: 34px 0 20px;
+}
+
+.tabla-historial {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 60px;
+}
+.tabla-historial th, .tabla-historial td {
+  text-align: left;
+  padding: 11px 12px;
+  border-bottom: 1px solid var(--tinta-linea);
+  font-size: 14px;
+}
+.tabla-historial th {
+  color: var(--hueso-tenue);
+  font-weight: 600;
+  font-size: 12.5px;
+}
+.tabla-historial td.cap { text-transform: capitalize; }
+
+.chip-confianza {
+  background: var(--tinta-panel);
+  border: 1px solid var(--tinta-linea);
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.hist-header-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.btn-secundario {
+  color: var(--ambar);
+  text-decoration: none;
+  font-size: 13.5px;
+  border: 1px solid var(--tinta-linea);
+  padding: 7px 14px;
+  border-radius: var(--radio);
+  white-space: nowrap;
+}
+.btn-secundario:hover { border-color: var(--ambar); }
+
+.marcar-resultado { display: flex; gap: 6px; }
+.btn-marcar {
+  background: transparent;
+  border: 1px solid var(--tinta-linea);
+  color: var(--hueso-tenue);
+  padding: 4px 9px;
+  border-radius: var(--radio);
+  font-size: 12px;
+  cursor: pointer;
+}
+.btn-marcar.acierto.activo { background: var(--verde); border-color: var(--verde); color: var(--tinta); font-weight: 600; }
+.btn-marcar.fallo.activo { background: var(--rojo); border-color: var(--rojo); color: var(--tinta); font-weight: 600; }
+
+.resumen-calibracion {
+  display: flex;
+  gap: 40px;
+  margin: 22px 0 30px;
+}
+.resumen-num {
+  font-family: "Iowan Old Style", "Georgia", serif;
+  font-size: 32px;
+  color: var(--ambar);
+}
+.resumen-label { font-size: 12.5px; color: var(--hueso-tenue); margin-top: 2px; }
+
+.sin-datos { color: var(--hueso-tenue); font-size: 12.5px; }
+.tabla-calibracion td, .tabla-calibracion th { font-size: 13.5px; }
+
+.tabla-value-bets {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  font-size: 13px;
+}
+.tabla-value-bets th {
+  text-align: left;
+  color: var(--hueso-tenue);
+  font-weight: 600;
+  font-size: 11.5px;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--tinta-linea);
+}
+.tabla-value-bets td {
+  padding: 8px;
+  border-bottom: 1px solid var(--tinta-linea);
+}
+.tabla-value-bets tr.fila-value { background: rgba(79, 157, 117, 0.08); }
+.casa-cuota { color: var(--hueso-tenue); font-size: 11.5px; }
+.edge-positivo { color: var(--verde); font-weight: 600; }
+.edge-negativo { color: var(--hueso-tenue); }
+.badge-value {
+  background: var(--verde);
+  color: var(--tinta);
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 20px;
+}
+.nota-value-bets {
+  font-size: 12px;
+  color: var(--hueso-tenue);
+  margin-top: 10px;
+}
+#select-liga-cuotas {
+  background: var(--tinta-panel);
+  border: 1px solid var(--tinta-linea);
+  color: var(--hueso);
+  padding: 8px 10px;
+  border-radius: var(--radio);
+  font-size: 13.5px;
+  flex: 1;
+}
+
+.tabla-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.calibracion-linea {
+  font-size: 12.5px;
+  color: var(--hueso-tenue);
+  margin: 10px 0 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--tinta-linea);
+}
+.calibracion-linea b { color: var(--ambar); }
+.calibracion-linea.sutil { color: var(--hueso-tenue); }
+.calibracion-linea.sutil a { color: var(--ambar); }
+
+.aviso-arbitraje {
+  border: 1px solid var(--verde);
+  background: rgba(79, 157, 117, 0.08);
+  border-radius: var(--radio);
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  font-size: 13.5px;
+}
+.aviso-arbitraje ul { margin: 8px 0; padding-left: 18px; }
+.aviso-arbitraje li { margin-bottom: 4px; }
+
+.aviso-lesionados {
+  margin-top: 6px;
+  padding: 8px 10px;
+  border: 1px solid var(--rojo);
+  background: rgba(192, 96, 75, 0.08);
+  border-radius: var(--radio);
+  font-size: 12px;
+  color: var(--hueso);
+}
+
+.btn-registrar-apuesta {
+  background: transparent;
+  border: 1px solid var(--tinta-linea);
+  color: var(--ambar);
+  padding: 4px 10px;
+  border-radius: var(--radio);
+  font-size: 11.5px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn-registrar-apuesta:hover { border-color: var(--ambar); }
+.btn-registrar-apuesta:disabled { opacity: 0.5; cursor: default; }
+
+/* ===========================================================================
+   RESPONSIVE — TELÉFONO
+   =========================================================================== */
+
+@media (max-width: 720px) {
+  html { font-size: 15px; }
+
+  .wrap { padding: 0 16px; }
+
+  .header-row {
+    padding: 14px 16px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .brand-name { font-size: 17px; }
+  .brand-sub { font-size: 11px; }
+
+  .site-nav {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    padding-bottom: 2px;
+  }
+  .site-nav a {
+    margin-left: 0;
+    margin-right: 18px;
+    font-size: 13.5px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .main-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding-top: 20px;
+    padding-bottom: 40px;
+  }
+
+  .panel-resultado { position: static; }
+
+  .sport-tabs { width: 100%; }
+  .sport-tab { flex: 1; padding: 10px 8px; font-size: 13.5px; }
+
+  h3 { font-size: 12.5px; margin: 20px 0 8px; padding-top: 12px; }
+
+  .field-row, .field-row.three, .field-row.four {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  input[type="text"], input[type="number"], #select-liga-cuotas {
+    font-size: 16px;   /* evita el auto-zoom de iOS al tocar un input */
+    padding: 10px;
+  }
+  label { font-size: 12px; }
+
+  .input-buscable { flex-wrap: wrap; }
+  .input-buscable input { flex: 1 1 100%; }
+  .btn-buscar { flex: 1 1 100%; padding: 9px; }
+
+  .btn-analizar { padding: 15px; font-size: 15.5px; }
+
+  .res-pronostico { font-size: 23px; }
+  .bloque-mercado { padding: 15px 14px; }
+
+  .datos-clave { grid-template-columns: 1fr; gap: 8px; }
+
+  .jugador-stats-row { gap: 10px; font-size: 12px; }
+
+  .hist-header-row { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .hist-title { font-size: 21px; margin: 22px 0 14px; }
+
+  .resumen-calibracion { flex-wrap: wrap; gap: 20px 32px; }
+  .resumen-num { font-size: 26px; }
+
+  .tabla-historial th, .tabla-historial td,
+  .tabla-value-bets th, .tabla-value-bets td {
+    padding: 8px 10px;
+    font-size: 12.5px;
+  }
+
+  .marcar-resultado { flex-wrap: wrap; }
+
+  .footer, .site-footer { padding: 16px 0 30px; }
+}
+
+@media (max-width: 420px) {
+  .field-row, .field-row.three, .field-row.four { grid-template-columns: 1fr; }
+  .datos-clave { grid-template-columns: 1fr; }
+  .jugador-block { padding-left: 10px; }
+}
+
+/* -------------------- Footer -------------------- */
+
+.site-footer {
+  border-top: 1px solid var(--tinta-linea);
+  padding: 22px 0 40px;
+}
+.site-footer p {
+  font-size: 12.5px;
+  color: var(--hueso-tenue);
+  max-width: 760px;
+}

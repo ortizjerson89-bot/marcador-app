@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marcador — Análisis de partidos</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body data-cuotas-ok="{{ 'true' if api_cuotas_ok else 'false' }}">
+
+<header class="site-header">
+  <div class="wrap header-row">
+    <div class="brand">
+      <span class="brand-mark">M</span>
+      <div class="brand-text">
+        <div class="brand-name">Marcador</div>
+        <div class="brand-sub">motor de análisis estadístico</div>
+      </div>
+    </div>
+    <nav class="site-nav">
+      <a href="/" class="active">Analizar</a>
+      <a href="/historial">Historial</a>
+      <a href="/apuestas">Apuestas</a>
+      <a href="/calibracion">Calibración</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap main-grid">
+
+  <section class="panel-input">
+
+    {% if not api_futbol_baloncesto_ok or not api_tenis_ok or not api_cuotas_ok %}
+    <div class="aviso-api">
+      <strong>Estado de APIs:</strong>
+      {% if not api_futbol_baloncesto_ok %}fútbol/baloncesto sin <code>API_SPORTS_KEY</code> · {% endif %}
+      {% if not api_tenis_ok %}tenis sin <code>RAPIDAPI_KEY</code> · {% endif %}
+      {% if not api_cuotas_ok %}cuotas/value bets sin <code>ODDS_API_KEY</code>{% endif %}
+      — puedes seguir llenando los campos a mano mientras tanto.
+    </div>
+    {% endif %}
+
+    <div class="sport-tabs" id="sport-tabs">
+      <button class="sport-tab active" data-sport="futbol">Fútbol</button>
+      <button class="sport-tab" data-sport="baloncesto">Baloncesto</button>
+      <button class="sport-tab" data-sport="tenis">Tenis</button>
+    </div>
+
+    <form id="form-analisis">
+
+      <!-- ============ FÚTBOL ============ -->
+      <div class="sport-fields" data-sport-fields="futbol">
+        <div class="field-row">
+          <label>Equipo local
+            <div class="input-buscable">
+              <input type="text" name="local_nombre" placeholder="Ej. River Plate" value="Local" data-buscable="equipo" data-deporte="futbol" data-rol="local">
+              <button type="button" class="btn-buscar" data-buscar-equipo data-deporte="futbol" data-rol="local">Buscar</button>
+            </div>
+            <div class="resultados-busqueda" data-resultados-equipo="futbol-local"></div>
+            <input type="hidden" name="local_team_id" data-hidden="futbol-local-team_id">
+            <input type="hidden" name="local_liga_id" data-hidden="futbol-local-liga_id">
+            <input type="hidden" name="local_season" data-hidden="futbol-local-season">
+          </label>
+          <label>Equipo visitante
+            <div class="input-buscable">
+              <input type="text" name="visita_nombre" placeholder="Ej. Boca Juniors" value="Visitante" data-buscable="equipo" data-deporte="futbol" data-rol="visita">
+              <button type="button" class="btn-buscar" data-buscar-equipo data-deporte="futbol" data-rol="visita">Buscar</button>
+            </div>
+            <div class="resultados-busqueda" data-resultados-equipo="futbol-visita"></div>
+            <input type="hidden" name="visita_team_id" data-hidden="futbol-visita-team_id">
+            <input type="hidden" name="visita_liga_id" data-hidden="futbol-visita-liga_id">
+            <input type="hidden" name="visita_season" data-hidden="futbol-visita-season">
+          </label>
+        </div>
+
+        <h3>Promedio de goles de la liga</h3>
+        <div class="field-row">
+          <label>Goles/partido de local (liga)
+            <input type="number" step="0.01" name="liga_prom_goles_local" value="1.50">
+          </label>
+          <label>Goles/partido de visitante (liga)
+            <input type="number" step="0.01" name="liga_prom_goles_visita" value="1.15">
+          </label>
+        </div>
+
+        <h3>Rendimiento del local (jugando de local)</h3>
+        <div class="field-row">
+          <label>Goles a favor / partido
+            <input type="number" step="0.01" name="local_goles_favor_local" value="1.80">
+          </label>
+          <label>Goles en contra / partido
+            <input type="number" step="0.01" name="local_goles_contra_local" value="0.90">
+          </label>
+        </div>
+        <div class="field-row">
+          <label>Corners a favor / partido
+            <input type="number" step="0.1" name="local_corners_favor" value="6.0">
+          </label>
+          <label>Corners en contra / partido
+            <input type="number" step="0.1" name="local_corners_contra" value="4.0">
+          </label>
+        </div>
+        <div class="field-row">
+          <label>Tiros a favor / partido
+            <input type="number" step="0.1" name="local_tiros_favor" value="13.5">
+          </label>
+          <label>Forma últimos 5 (0–5)
+            <input type="number" step="0.1" min="0" max="5" name="local_forma" value="3.5">
+          </label>
+        </div>
+
+        <h3>Rendimiento del visitante (jugando de visita)</h3>
+        <div class="field-row">
+          <label>Goles a favor / partido
+            <input type="number" step="0.01" name="visita_goles_favor_visita" value="1.10">
+          </label>
+          <label>Goles en contra / partido
+            <input type="number" step="0.01" name="visita_goles_contra_visita" value="1.35">
+          </label>
+        </div>
+        <div class="field-row">
+          <label>Corners a favor / partido
+            <input type="number" step="0.1" name="visita_corners_favor" value="4.3">
+          </label>
+          <label>Corners en contra / partido
+            <input type="number" step="0.1" name="visita_corners_contra" value="5.6">
+          </label>
+        </div>
+        <div class="field-row">
+          <label>Tiros a favor / partido
+            <input type="number" step="0.1" name="visita_tiros_favor" value="9.8">
+          </label>
+          <label>Forma últimos 5 (0–5)
+            <input type="number" step="0.1" min="0" max="5" name="visita_forma" value="2.5">
+          </label>
+        </div>
+
+        <h3>Historial directo (H2H) — opcional</h3>
+        <div class="field-row three">
+          <label>Victorias local
+            <input type="number" step="1" name="h2h_local_wins" value="0">
+          </label>
+          <label>Empates
+            <input type="number" step="1" name="h2h_empates" value="0">
+          </label>
+          <label>Victorias visitante
+            <input type="number" step="1" name="h2h_visita_wins" value="0">
+          </label>
+        </div>
+
+        <h3>Jugadores clave — local <span class="opcional-tag">(opcional, hasta 3)</span></h3>
+        <p class="ayuda-jugadores">Deja el nombre vacío para omitir un jugador. Los promedios son por partido jugado. Busca primero el equipo local arriba para poder autocompletar jugadores.</p>
+        {% for i in [1,2,3] %}
+        <div class="jugador-block">
+          <div class="field-row jugador-nombre-row">
+            <label>Nombre jugador {{ i }}
+              <div class="input-buscable">
+                <input type="text" name="local_j{{ i }}_nombre" placeholder="Ej. Delantero titular" data-buscable="jugador" data-rol="local" data-idx="{{ i }}">
+                <button type="button" class="btn-buscar" data-buscar-jugador data-rol="local" data-idx="{{ i }}">Buscar</button>
+              </div>
+              <div class="resultados-busqueda" data-resultados-jugador="local-{{ i }}"></div>
+            </label>
+          </div>
+          <div class="field-row four">
+            <label>Goles/partido
+              <input type="number" step="0.01" name="local_j{{ i }}_goles" placeholder="0.4">
+            </label>
+            <label>Tiros a puerta/partido
+              <input type="number" step="0.1" name="local_j{{ i }}_tiros" placeholder="1.8">
+            </label>
+            <label>Asistencias/partido
+              <input type="number" step="0.01" name="local_j{{ i }}_asistencias" placeholder="0.2">
+            </label>
+            <label>Minutos promedio
+              <input type="number" step="1" name="local_j{{ i }}_minutos" placeholder="90">
+            </label>
+          </div>
+        </div>
+        {% endfor %}
+
+        <h3>Jugadores clave — visitante <span class="opcional-tag">(opcional, hasta 3)</span></h3>
+        {% for i in [1,2,3] %}
+        <div class="jugador-block">
+          <div class="field-row jugador-nombre-row">
+            <label>Nombre jugador {{ i }}
+              <div class="input-buscable">
+                <input type="text" name="visita_j{{ i }}_nombre" placeholder="Ej. Delantero titular" data-buscable="jugador" data-rol="visita" data-idx="{{ i }}">
+                <button type="button" class="btn-buscar" data-buscar-jugador data-rol="visita" data-idx="{{ i }}">Buscar</button>
+              </div>
+              <div class="resultados-busqueda" data-resultados-jugador="visita-{{ i }}"></div>
+            </label>
+          </div>
+          <div class="field-row four">
+            <label>Goles/partido
+              <input type="number" step="0.01" name="visita_j{{ i }}_goles" placeholder="0.4">
+            </label>
+            <label>Tiros a puerta/partido
+              <input type="number" step="0.1" name="visita_j{{ i }}_tiros" placeholder="1.8">
+            </label>
+            <label>Asistencias/partido
+              <input type="number" step="0.01" name="visita_j{{ i }}_asistencias" placeholder="0.2">
+            </label>
+            <label>Minutos promedio
+              <input type="number" step="1" name="visita_j{{ i }}_minutos" placeholder="90">
+            </label>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- ============ BALONCESTO ============ -->
+      <div class="sport-fields" data-sport-fields="baloncesto" hidden>
+        <div class="field-row">
+          <label>Equipo local
+            <div class="input-buscable">
+              <input type="text" name="local_nombre" placeholder="Ej. Lakers" value="Local" data-buscable="equipo" data-deporte="baloncesto" data-rol="local">
+              <button type="button" class="btn-buscar" data-buscar-equipo data-deporte="baloncesto" data-rol="local">Buscar</button>
+            </div>
+            <div class="resultados-busqueda" data-resultados-equipo="baloncesto-local"></div>
+          </label>
+          <label>Equipo visitante
+            <div class="input-buscable">
+              <input type="text" name="visita_nombre" placeholder="Ej. Celtics" value="Visitante" data-buscable="equipo" data-deporte="baloncesto" data-rol="visita">
+              <button type="button" class="btn-buscar" data-buscar-equipo data-deporte="baloncesto" data-rol="visita">Buscar</button>
+            </div>
+            <div class="resultados-busqueda" data-resultados-equipo="baloncesto-visita"></div>
+          </label>
+        </div>
+
+        <h3>Promedios de puntos</h3>
+        <div class="field-row">
+          <label>Local — pts a favor / partido
+            <input type="number" step="0.1" name="local_pts_favor" value="112.0">
+          </label>
+          <label>Local — pts en contra / partido
+            <input type="number" step="0.1" name="local_pts_contra" value="107.0">
+          </label>
+        </div>
+        <div class="field-row">
+          <label>Visitante — pts a favor / partido
+            <input type="number" step="0.1" name="visita_pts_favor" value="108.0">
+          </label>
+          <label>Visitante — pts en contra / partido
+            <input type="number" step="0.1" name="visita_pts_contra" value="110.0">
+          </label>
+        </div>
+
+        <h3>Ritmo y contexto</h3>
+        <div class="field-row">
+          <label>Ritmo local (posesiones/partido)
+            <input type="number" step="0.1" name="local_ritmo" value="99.5">
+          </label>
+          <label>Ritmo visitante (posesiones/partido)
+            <input type="number" step="0.1" name="visita_ritmo" value="97.0">
+          </label>
+        </div>
+        <div class="field-row">
+          <label>Ventaja de localía (pts)
+            <input type="number" step="0.1" name="ventaja_localia" value="2.5">
+          </label>
+          <label>Línea total de puntos (para over/under)
+            <input type="number" step="0.5" name="linea_total_puntos" value="222.5">
+          </label>
+        </div>
+        <div class="field-row">
+          <label>Forma local (0–5)
+            <input type="number" step="0.1" min="0" max="5" name="local_forma" value="3.5">
+          </label>
+          <label>Forma visitante (0–5)
+            <input type="number" step="0.1" min="0" max="5" name="visita_forma" value="3.0">
+          </label>
+        </div>
+      </div>
+
+      <!-- ============ TENIS ============ -->
+      <div class="sport-fields" data-sport-fields="tenis" hidden>
+        <div class="field-row">
+          <label>Jugador A
+            <div class="input-buscable">
+              <input type="text" name="jugador_a_nombre" placeholder="Ej. Jugador A" value="Jugador A" data-buscable="tenis" data-lado="a">
+              <button type="button" class="btn-buscar" data-buscar-tenis data-lado="a">Buscar</button>
+            </div>
+          </label>
+          <label>Jugador B
+            <div class="input-buscable">
+              <input type="text" name="jugador_b_nombre" placeholder="Ej. Jugador B" value="Jugador B" data-buscable="tenis" data-lado="b">
+              <button type="button" class="btn-buscar" data-buscar-tenis data-lado="b">Buscar</button>
+            </div>
+          </label>
+        </div>
+
+        <h3>Ranking y forma</h3>
+        <div class="field-row">
+          <label>Puntos de ranking — A
+            <input type="number" step="1" name="jugador_a_ranking_pts" value="3400">
+          </label>
+          <label>Puntos de ranking — B
+            <input type="number" step="1" name="jugador_b_ranking_pts" value="2600">
+          </label>
+        </div>
+        <div class="field-row">
+          <label>% victorias temporada — A
+            <input type="number" step="0.1" name="jugador_a_winrate" value="68">
+          </label>
+          <label>% victorias temporada — B
+            <input type="number" step="0.1" name="jugador_b_winrate" value="55">
+          </label>
+        </div>
+        <div class="field-row">
+          <label>% victorias en esta superficie — A
+            <input type="number" step="0.1" name="jugador_a_winrate_superficie" value="71">
+          </label>
+          <label>% victorias en esta superficie — B
+            <input type="number" step="0.1" name="jugador_b_winrate_superficie" value="50">
+          </label>
+        </div>
+        <div class="field-row">
+          <label>Forma últimos torneos — A (0–5)
+            <input type="number" step="0.1" min="0" max="5" name="jugador_a_forma" value="4.0">
+          </label>
+          <label>Forma últimos torneos — B (0–5)
+            <input type="number" step="0.1" min="0" max="5" name="jugador_b_forma" value="3.0">
+          </label>
+        </div>
+
+        <h3>Historial directo (H2H) — opcional</h3>
+        <div class="field-row">
+          <label>Victorias de A sobre B
+            <input type="number" step="1" name="h2h_jugador_a" value="0">
+          </label>
+          <label>Victorias de B sobre A
+            <input type="number" step="1" name="h2h_jugador_b" value="0">
+          </label>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-analizar">Analizar partido</button>
+    </form>
+  </section>
+
+  <section class="panel-resultado" id="panel-resultado">
+    <div class="resultado-vacio">
+      <p>Completa los datos del partido y presiona <strong>Analizar partido</strong>.</p>
+      <p class="nota-vacia">El resultado se arma en el momento: probabilidades por mercado, marcador o ganador más probable, y un nivel de confianza calculado a partir del margen entre resultados y qué tan completos están los datos.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>Las cifras son estimaciones estadísticas a partir de los datos suministrados, no garantías. Ningún modelo predice el deporte con certeza — úsalo como una herramienta de análisis, no como consejo financiero, y juega con responsabilidad.</p>
+  </div>
+</footer>
+
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
